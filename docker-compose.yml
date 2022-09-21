@@ -1,0 +1,40 @@
+version: "3.4"
+
+x-env-file: &env_file
+  env_file:
+    - .env
+
+x-base-backend:  &base_backend
+  <<: *env_file
+  volumes:
+    - .:/app/
+
+services:
+  backend:
+    <<: *base_backend
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: api_image
+    depends_on:
+      - postgres
+    container_name: backend
+    ports:
+      - 8000:8000
+    command: >
+      sh -c "python manage.py collectstatic --noinput && 
+             python manage.py migrate && 
+             gunicorn src.wsgi -w 1 -b 0.0.0.0:8000 --chdir=/app --limit-request-line=0  --limit-request-field_size=0 --reload"
+
+  postgres:
+    <<: *env_file
+    image: postgres:14.3-alpine
+    container_name: postgres
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
