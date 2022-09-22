@@ -1,6 +1,6 @@
 from rest_framework import filters, mixins, viewsets
 
-from src.api.images.models import Image
+from src.api.images.models import UploadedImages
 from src.api.images.serializers import ImageSerializer
 
 
@@ -12,7 +12,7 @@ class ImageViewSet(
 ):
 
     serializer_class = ImageSerializer
-    queryset = Image.objects.all()
+    queryset = UploadedImages.objects.all()
     lookup_field = "id"
     filter_backends = [
         filters.SearchFilter,

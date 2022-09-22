@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Image",
+            name="UploadedImages",
             fields=[
                 (
                     "id",
@@ -29,17 +29,15 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "height",
-                    models.PositiveIntegerField(verbose_name="required image height"),
-                ),
-                (
-                    "width",
-                    models.PositiveIntegerField(verbose_name="required image width"),
-                ),
-                (
                     "image_file",
                     models.ImageField(
                         upload_to="images", verbose_name="uploaded image"
+                    ),
+                ),
+                (
+                    "image_file_name",
+                    models.CharField(
+                        blank=False, max_length=1024, verbose_name="image original name"
                     ),
                 ),
             ],
