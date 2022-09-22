@@ -9,7 +9,9 @@ SECRET_KEY = config("DJANGO_SECRET_KEY", default="topsecrettopsecrettopsecret")
 
 DEBUG = config("DJANGO_DEBUG", default=1, cast=bool)
 
-ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="localhost,127.0.0.1,0.0.0.0", cast=Csv())
+ALLOWED_HOSTS = config(
+    "DJANGO_ALLOWED_HOSTS", default="localhost,127.0.0.1,0.0.0.0", cast=Csv()
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -19,6 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "django_filters",
     "drf_yasg",
     "storages",
     "src.api.images.apps.ImagesConfig",
@@ -89,6 +92,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -107,16 +116,17 @@ USE_TZ = True
 USE_AWS_S3 = config("USE_AWS_S3", default=0, cast=bool)
 
 if USE_AWS_S3:
-    AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default="")
-    AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default="")
-    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default="")
-    AWS_DEFAULT_ACL = config("AWS_DEFAULT_ACL", default='public-read')
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default="")
+    AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", default="")
+    AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", default="")
+    AWS_DEFAULT_ACL = config("AWS_DEFAULT_ACL", default="public-read")
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     # s3 static settings
-    AWS_LOCATION = 'static'
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    AWS_LOCATION = "static"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+    STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 else:
     STATIC_URL = "/static/"

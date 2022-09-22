@@ -571,6 +571,18 @@ python-versions = "*"
 ptyprocess = ">=0.5"
 
 [[package]]
+name = "pillow"
+version = "9.2.0"
+description = "Python Imaging Library (Fork)"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-issues (>=3.0.1)", "sphinx-removed-in", "sphinxext-opengraph"]
+tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
+
+[[package]]
 name = "pkginfo"
 version = "1.8.2"
 description = "Query metadatdata from sdists / bdists / installed packages."
@@ -937,7 +949,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "a7ece258b08bc43806f7d4b0f30e1d7ccf3346088b4c52a7d6b5f723c610aaab"
+content-hash = "8d47fb11dda3a9aa73c3eb86a2458c95389b424c76c15ffea7f030c1938471d6"
 
 [metadata.files]
 asgiref = []
@@ -987,6 +999,7 @@ packaging = []
 pastel = []
 pathspec = []
 pexpect = []
+pillow = []
 pkginfo = []
 platformdirs = []
 poetry = []
