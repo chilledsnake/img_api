@@ -1,4 +1,4 @@
-# url_shortener
+# IMAGES API
 
 This api allows you to resize and store your common formats images.
 
