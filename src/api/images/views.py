@@ -1,9 +1,11 @@
 from rest_framework import filters, mixins, viewsets
+from rest_framework.parsers import FormParser
+from rest_framework.decorators import parser_classes
 
 from src.api.images.models import UploadedImages
 from src.api.images.serializers import ImageSerializer
 
-
+@parser_classes((FormParser,))
 class ImageViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
