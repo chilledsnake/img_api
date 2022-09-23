@@ -8,7 +8,7 @@ Docker, docker-compose
 ## Installation
 Just
 ```bash
-docker-compose up
+docker compose up
 ```
 
 ## Usage
