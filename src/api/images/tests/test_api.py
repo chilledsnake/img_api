@@ -1,4 +1,7 @@
+import shutil
+
 import pytest
+from django.conf import settings
 from rest_framework.reverse import reverse
 
 from src.api.images.tests.utils import create_temp_image
@@ -126,3 +129,7 @@ class TestImagesCreateView:
         assert response.status_code == 201
         assert response.data["width"] == expected_width
         assert response.data["height"] == expected_height
+
+
+def teardown_module():
+    shutil.rmtree(settings.MEDIA_ROOT)
