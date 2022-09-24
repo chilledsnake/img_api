@@ -15,15 +15,11 @@ class ImageSerializer(serializers.ModelSerializer):
         read_only_fields = ("id",)
 
     def create(self, validated_data):
+
         ImageProcessor(
             image_file=validated_data["image_file"].file,
             width=validated_data.pop("width", None),
             height=validated_data.pop("height", None),
         ).image_resize()
 
-        instance = UploadedImages.objects.create(
-            image_file=validated_data["image_file"],
-            title=validated_data["title"],
-        )
-
-        return instance
+        return super().create(validated_data)
