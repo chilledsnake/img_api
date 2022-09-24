@@ -11,6 +11,15 @@ Just
 docker compose up
 ```
 
+## Tests
+after docker compose up
+```bash
+docker compose exec backend bash
+```
+```bash
+pytest
+```
+
 ## Usage
 
 allowed hosts: localhost, 0.0.0.0, 127.0.0.1
