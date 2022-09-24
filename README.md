@@ -14,6 +14,12 @@ docker compose up
 ## Tests
 after docker compose up
 ```bash
+docker compose run backend pytest
+```
+
+or...
+
+```bash
 docker compose exec backend bash
 ```
 ```bash
