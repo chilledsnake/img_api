@@ -5,8 +5,8 @@ from src.core.images.image_processing import ImageProcessor
 
 
 class ImageSerializer(serializers.ModelSerializer):
-    height = serializers.IntegerField(min_value=1)
-    width = serializers.IntegerField(min_value=1)
+    height = serializers.IntegerField(min_value=1, required=False)
+    width = serializers.IntegerField(min_value=1, required=False)
     image_file = serializers.ImageField(write_only=True)
 
     class Meta:
@@ -17,16 +17,13 @@ class ImageSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ImageProcessor(
             image_file=validated_data["image_file"].file,
-            width=validated_data["width"],
-            height=validated_data["height"],
+            width=validated_data.pop("width", None),
+            height=validated_data.pop("height", None),
         ).image_resize()
 
-        instance, created = UploadedImages.objects.update_or_create(
-            image_file_name=validated_data["image_file"].name,
-            defaults={
-                "image_file_name": validated_data["image_file"].name,
-                "image_file": validated_data["image_file"],
-                "title": validated_data["title"],
-            },
+        instance = UploadedImages.objects.create(
+            image_file=validated_data["image_file"],
+            title=validated_data["title"],
         )
+
         return instance

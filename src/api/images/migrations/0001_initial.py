@@ -34,12 +34,6 @@ class Migration(migrations.Migration):
                         upload_to="images", verbose_name="uploaded image"
                     ),
                 ),
-                (
-                    "image_file_name",
-                    models.CharField(
-                        blank=False, max_length=1024, verbose_name="image original name"
-                    ),
-                ),
             ],
         ),
     ]

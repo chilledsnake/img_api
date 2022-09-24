@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_yasg",
     "storages",
-    "src.api.images.apps.ImagesConfig",
+    "src.api.images",
 ]
 
 MIDDLEWARE = [
@@ -94,6 +94,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "PAGE_SIZE": 10,
 }
 
@@ -105,7 +106,7 @@ FILE_UPLOAD_HANDLERS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = "pl"
+LANGUAGE_CODE = "en"
 
 TIME_ZONE = "UTC"
 
@@ -123,6 +124,7 @@ if USE_AWS_S3:
     AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default="")
     AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", default="")
     AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", default="")
+    AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = config("AWS_DEFAULT_ACL", default="public-read")
     AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
     AWS_LOCATION = "media"
