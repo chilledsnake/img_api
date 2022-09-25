@@ -17,7 +17,3 @@ class UploadedImages(models.Model):
     @property
     def width(self):
         return self.image_file.width
-
-    @property
-    def url(self):
-        return self.image_file.url
