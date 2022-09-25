@@ -1,7 +1,10 @@
 import shutil
+import typing as t
 
 import pytest
 from django.conf import settings
+from django.test import Client
+from factory.base import FactoryMetaClass
 from rest_framework.reverse import reverse
 
 from src.api.images.tests.utils import create_temp_image
@@ -11,15 +14,17 @@ pytestmark = pytest.mark.django_db(reset_sequences=True)
 
 class TestImagesListView:
     @pytest.fixture()
-    def url(self):
+    def url(self) -> str:
         return reverse("images_api:image-list")
 
-    def test_no_images_should_return_empty_list(self, client, url):
+    def test_no_images_should_return_empty_list(self, client: Client, url: str) -> None:
         response = client.get(url)
         assert response.status_code == 200
         assert response.data["results"] == []
 
-    def test_one_image_exist(self, client, url, uploaded_images_factory):
+    def test_one_image_exist(
+        self, client: Client, url: str, uploaded_images_factory: FactoryMetaClass
+    ) -> None:
         uploaded_images_factory()
         response = client.get(url)
         assert response.status_code == 200
@@ -37,12 +42,12 @@ class TestImagesListView:
     )
     def test_list_filtering_by_title(
         self,
-        client,
-        url,
-        uploaded_images_factory,
-        filtering_keyword,
-        expected_records_number,
-    ):
+        client: Client,
+        url: str,
+        uploaded_images_factory: FactoryMetaClass,
+        filtering_keyword: str,
+        expected_records_number: int,
+    ) -> None:
         uploaded_images_factory(title="test_1")
         uploaded_images_factory(title="test_1_2")
         uploaded_images_factory(title="test_1_2_3")
@@ -58,7 +63,13 @@ class TestImagesDetailView:
             pytest.param("0", 404),
         ),
     )
-    def test_get_image(self, client, uploaded_images_factory, id, result):
+    def test_get_image(
+        self,
+        client: Client,
+        uploaded_images_factory: FactoryMetaClass,
+        id: str,
+        result: int,
+    ) -> None:
         uploaded_images_factory()
         response = client.get(reverse("images_api:image-detail", kwargs={"id": id}))
         assert response.status_code == result
@@ -66,10 +77,12 @@ class TestImagesDetailView:
 
 class TestImagesCreateView:
     @pytest.fixture()
-    def url(self):
+    def url(self) -> str:
         return reverse("images_api:image-list")
 
-    def test_create_image_without_arguments_should_fail(self, client, url):
+    def test_create_image_without_arguments_should_fail(
+        self, client: Client, url: str
+    ) -> None:
         response = client.post(url)
         expected_response = {
             "image_file": ["No file was submitted."],
@@ -78,7 +91,7 @@ class TestImagesCreateView:
         assert response.data == expected_response
 
     @pytest.mark.parametrize("image_format", ("JPEG", "png", "PNG", "tiff", "TIFF"))
-    def test_create_image(self, client, url, image_format):
+    def test_create_image(self, client: Client, url: str, image_format: str) -> None:
         temp_image = create_temp_image(image_format=image_format)
         post_data = {
             "image_file": temp_image,
@@ -92,27 +105,30 @@ class TestImagesCreateView:
         assert response.data["height"] == post_data["height"]
 
     @pytest.mark.parametrize(
-        "width, height, required_width, required_height, expected_width, expected_height",
+        "width, height, required_width, required_height, expected_width, expected_height, status_code",
         (
-            pytest.param(100, 50, 200, 200, 100, 50, id="ratio 2/1"),
-            pytest.param(200, 150, 100, 200, 100, 75, id="ratio 4/3"),
-            pytest.param(100, 200, 50, 400, 50, 100, id="ratio 1/2"),
-            pytest.param(100, 200, None, None, 100, 200, id="no required dimensions"),
-            pytest.param(100, 200, None, 100, 100, 200, id="no required width"),
-            pytest.param(100, 200, 100, None, 100, 200, id="no required height"),
+            pytest.param(100, 50, 200, 200, 100, 50, 201, id="ratio 2/1"),
+            pytest.param(200, 150, 100, 200, 100, 75, 201, id="ratio 4/3"),
+            pytest.param(100, 200, 50, 400, 50, 100, 201, id="ratio 1/2"),
+            pytest.param(
+                100, 200, None, None, 100, 200, 201, id="no required dimensions"
+            ),
+            pytest.param(100, 200, None, 100, None, None, 400, id="no required width"),
+            pytest.param(100, 200, 100, None, None, None, 400, id="no required height"),
         ),
     )
     def test_image_resize_and_optimization(
         self,
-        client,
-        url,
-        width,
-        height,
-        required_width,
-        required_height,
-        expected_width,
-        expected_height,
-    ):
+        client: Client,
+        url: str,
+        width: int,
+        height: int,
+        required_width: t.Union[int, None],
+        required_height: t.Union[int, None],
+        expected_width: t.Union[int, None],
+        expected_height: t.Union[int, None],
+        status_code: int,
+    ) -> None:
         temp_image = create_temp_image(
             image_format="jpeg", width=width, height=height, name="test"
         )
@@ -126,9 +142,10 @@ class TestImagesCreateView:
             post_data["height"] = required_height
 
         response = client.post(path=url, data=post_data)
-        assert response.status_code == 201
-        assert response.data["width"] == expected_width
-        assert response.data["height"] == expected_height
+        assert response.status_code == status_code
+        if status_code == 201:
+            assert response.data["width"] == expected_width
+            assert response.data["height"] == expected_height
 
 
 def teardown_module():

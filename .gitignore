@@ -296,4 +296,6 @@ fabric.properties
 
 .env
 static/
+media/
+test-media/
 

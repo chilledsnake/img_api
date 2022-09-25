@@ -8,6 +8,4 @@ class UploadedImagesFactory(factory.django.DjangoModelFactory):
         model = UploadedImages
 
     title = factory.fuzzy.FuzzyText()
-    image_file = factory.django.ImageField(
-        verbose_name="uploaded image", upload_to="images"
-    )
+    image_file = factory.django.ImageField()

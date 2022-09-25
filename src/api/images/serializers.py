@@ -1,5 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from src.api.images.models import UploadedImages
 from src.core.images.image_processing import ImageProcessor
@@ -23,6 +24,14 @@ class ImageSerializer(serializers.ModelSerializer):
 
         request = self.context.get("request")
         return request.build_absolute_uri(obj.image_file.url)
+
+    def validate(self, attrs):
+        width_height_attrs = (attrs.get("width", None), attrs.get("height", None))
+
+        if not all(width_height_attrs) and any(width_height_attrs):
+            raise ValidationError("Width and height required or none of them.")
+
+        return attrs
 
     def create(self, validated_data):
 
