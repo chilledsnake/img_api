@@ -26,8 +26,8 @@ class TestImageProcessor:
     )
     def test_resize(
         self,
-        width: t.Union[int, None],
-        height: t.Union[int, None],
+        width: int,
+        height: int,
         required_width: t.Union[int, None],
         required_height: t.Union[int, None],
         expected_width: t.Union[int, None],
