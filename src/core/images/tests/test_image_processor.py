@@ -30,8 +30,8 @@ class TestImageProcessor:
         height: int,
         required_width: t.Union[int, None],
         required_height: t.Union[int, None],
-        expected_width: t.Union[int, None],
-        expected_height: t.Union[int, None],
+        expected_width: int,
+        expected_height: int,
     ) -> None:
         image = create_temp_image(width=width, height=height)
         ImageProcessor(
